@@ -2,7 +2,10 @@ from flask import Flask, render_template, request, flash, session
 # from flaskext.mysql import MySQL
 # from flask_mysql import MySQL
 # import MySQL
+import sys
 from flask.ext.mysqldb import MySQL
+import logging
+
 
 app = Flask(__name__)
 mysql = MySQL(app)
@@ -17,6 +20,9 @@ app.config['MYSQL_DATABASE_HOST'] = 'us-cdbr-iron-east-03.cleardb.net'
 
 mysql.init_app(app)
 # app.config.from_envvar('VENV_SETTINGS', silent=True)
+
+app.logger.addHandler(logging.StreamHandler(sys.stdout))
+app.logger.setLevel(logging.ERROR)
 
 
 @app.route("/login", methods=['GET', 'POST'])
