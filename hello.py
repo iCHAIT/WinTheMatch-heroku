@@ -1,8 +1,8 @@
 from flask import Flask, render_template, request, flash, session
-from flaskext.mysql import MySQL
+# from flaskext.mysql import MySQL
 
 
-mysql = MySQL()
+# mysql = MySQL()
 
 app = Flask(__name__)
 app.config.from_object(__name__)
@@ -13,7 +13,7 @@ app.config['MYSQL_DATABASE_DB'] = 'heroku_4195a882ccb08b2'
 app.config['SECRET_KEY'] = 'development key'
 app.config['MYSQL_DATABASE_HOST'] = 'us-cdbr-iron-east-03.cleardb.net'
 
-mysql.init_app(app)
+# mysql.init_app(app)
 # app.config.from_envvar('VENV_SETTINGS', silent=True)
 
 
