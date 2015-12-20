@@ -1,4 +1,3 @@
-import requests
 from bs4 import BeautifulSoup
 import sys
 import MySQLdb as mdb
@@ -14,7 +13,7 @@ def team():
     with open("Bowling_data/India.html", "r") as input_file:
         plain_text = input_file.read()
 
-    soup = BeautifulSoup(plain_text, "lxml")
+    soup = BeautifulSoup(plain_text)
     mat = []
     global newlist
     newlist = []
@@ -52,7 +51,7 @@ def player_stats(player, i):
     play = player_name(player, i)
     ply = []
     ply.append(play)
-    soup = BeautifulSoup(plain_text, "lxml")
+    soup = BeautifulSoup(plain_text)
     global mt
     mt = []
     res = []
@@ -100,7 +99,7 @@ def player_name(url, i):
     with open("Bowling_data/stats_%s" % url, "r") as input_file:
         plain_text = input_file.read()
 
-    soup = BeautifulSoup(plain_text, "lxml")
+    soup = BeautifulSoup(plain_text)
     for link in soup.findAll('h1', {'class': 'SubnavSitesection'}):
         data = link.get_text()
     name = data.split('/')
@@ -116,7 +115,7 @@ def match_result(url):
     with open("Bowling_data/match_%s" % ''.join(rand), "r") as input_file:
         plain_text = input_file.read()
 
-    soup = BeautifulSoup(plain_text, "lxml")
+    soup = BeautifulSoup(plain_text)
     for link in soup.findAll('div', {'class': 'innings-requirement'}):
         data = link.string
         return ' '.join(data.split())
@@ -127,7 +126,7 @@ def player_profile(player):
     with open("Bowling_data/player_%s" % player, "r") as input_file:
         plain_text = input_file.read()
 
-    soup = BeautifulSoup(plain_text, "lxml")
+    soup = BeautifulSoup(plain_text)
     for p in soup.findAll('p', {'class': 'ciPlayerinformationtxt'}):
         for span in p:
             abc = span.string
