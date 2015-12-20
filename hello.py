@@ -16,7 +16,7 @@ app.config['SECRET_KEY'] = 'development key'
 app.config['MYSQL_DATABASE_HOST'] = 'us-cdbr-iron-east-03.cleardb.net'
 
 mysql.init_app(app)
-app.config.from_envvar('VENV_SETTINGS', silent=True)
+# app.config.from_envvar('VENV_SETTINGS', silent=True)
 
 
 @app.route("/login", methods=['GET', 'POST'])
