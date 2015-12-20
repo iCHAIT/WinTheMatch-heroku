@@ -15,7 +15,7 @@ def team():
     with open("Batting_data/India.html", "r") as input_file:
         plain_text = input_file.read()
 
-    soup = BeautifulSoup(plain_text, "lxml")
+    soup = BeautifulSoup(plain_text)
     mat = []
     global newlist
     newlist = []
@@ -50,7 +50,7 @@ def player_stats(player, i):
     ply = []
     ply.append(play)
 
-    soup = BeautifulSoup(plain_text, "lxml")
+    soup = BeautifulSoup(plain_text)
 
     global mt
     mt = []
@@ -98,7 +98,7 @@ def player_name(url, i):
     with open("Batting_data/stats_%s" % url, "r") as input_file:
         plain_text = input_file.read()
 
-    soup = BeautifulSoup(plain_text, "lxml")
+    soup = BeautifulSoup(plain_text)
     for link in soup.findAll('h1', {'class': 'SubnavSitesection'}):
         data = link.get_text()
     name = data.split('/')
@@ -114,7 +114,7 @@ def match_result(url):
     with open("Batting_data/match_%s" % ''.join(rand), "r") as input_file:
         plain_text = input_file.read()
 
-    soup = BeautifulSoup(plain_text, "lxml")
+    soup = BeautifulSoup(plain_text)
     for link in soup.findAll('div', {'class': 'innings-requirement'}):
         data = link.string
         return ' '.join(data.split())
