@@ -1,11 +1,12 @@
 from flask import Flask, render_template, request, flash, session
 # from flaskext.mysql import MySQL
 # from flask_mysql import MySQL
-import MySQL
-
-mysql = MySQL()
+# import MySQL
+from flask.ext.mysqldb import MySQL
 
 app = Flask(__name__)
+mysql = MySQL(app)
+
 app.config.from_object(__name__)
 
 app.config['MYSQL_DATABASE_USER'] = 'b31ec76d1b8f9e'
