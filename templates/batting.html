@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Win Prediction</title>
+  <link href = "static/img/logo.gif" rel="icon" type="image/gif">
+  <link href="static/css/bootstrap.min.css" rel="stylesheet">
+  <link href="static/css/bootstrap.css" rel="stylesheet">
+  <link href="static/css/style.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+  <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+  <link href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css" rel="stylesheet" type="text/css" media="all" />
+</head>
+
+<body class="main" id="bat-formu">
+<nav class="navbar navbar-default navbar-inverse" role="navigation" style="margin-bottom:50px">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/">Match Predictor</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="/about">About</a></li>
+        <li><a href="/news">News</a></li>
+        <li class="dropdown active">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Prediction<span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="/batting">Batting</a></li>
+            <li><a href="/bowling">Bowling</a></li>
+          </ul>
+        </li>
+        <li><a href="https://github.com/alyakhtar/WinTheMatch"><i class="fa fa-github fa-lg"></i></a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="col-sm-5" style="background-color:lavender;margin-left:50px">
+
+<form method="POST" class="main-form-bat">
+
+<div id="error">
+<br>
+{% if message1 %}
+  <h3>Error : {{ message1 }}</h3>
+{% endif %}
+</div>
+
+<h3>Select Batsmen :</h3>
+  <select name="batsmen">
+      <option>Select</option>
+      {% for plyr in player %}
+        {% for p in plyr %}
+        <option>
+          {{ p }}
+        </option>
+        {% endfor %}
+      {% endfor %}
+  </select>
+
+<br>
+<h3>Select Ground :</h3>
+
+<input type="radio" name="place" onchange="changestatebtn()" value="home"><label>Home</label>
+<input type="radio" name="place" onchange="changestatebtn()" value="away"><label>Away</label>
+<button id="place-btn" class="btn btn-danger" onclick="uncheck()" disabled=disabled >Clear</button>
+
+<h3>Select Opponent :</h3>
+    <select name="opponent">
+    <option>Select</option>
+      {% for opp in versus %}
+        {% for o in opp %}
+        <option>
+          {{ o }}
+        </option>
+        {% endfor %}
+      {% endfor %}
+    </select>
+
+<br>
+<h3>Runs Scored :</h3>
+
+<input type="radio" name="runs" onchange="changestate()" value="30"><label>More than 30 Runs</label>
+<input type="radio" name="runs" onchange="changestate()" value="50"><label>More than 50 Runs</label>
+<button id="run-btn" class="btn btn-danger" onclick="unchecked()" disabled=disabled>Clear</button>
+<br>
+
+<center>
+  <button type="submit" class="btn btn-primary btn-block" name="btn" value="form1" style="width: 300px;margin-bottom:20px;margin-top:40px;">Calculate win percentage</button>
+</center>
+</form>
+<br>
+</div>
+
+<div class="col-sm-2"></div>
+
+<div class="col-sm-5" style="background-color:lavender;margin-left:100px;" id="form2">
+<form method="POST" class="main-form2">
+<div id="error">
+{% if message2 %}
+  <h3>Error : {{ message2 }}</h3>
+{% endif %}
+</div>
+<input type="radio" name="players" onchange="modifystate()" value="option1">
+<label><h4 style="padding-top:50px;">Two players score half century</h4></label>
+<br>
+<input type="radio" name="players" onchange="modifystate()" value="option2">
+<label><h4 style="padding-top:50px;">A player scores a century</h4></label>
+<br>
+<input type="radio" name="players" onchange="modifystate()" value="option3">
+<label><h4 style="padding-top:50px;">Two players score more than 80 runs</h4></label><br>
+<br>
+<button id ="form2-btn" class="btn btn-danger pull-right" style="margin-right:50px;" onclick="disable()" disabled=disabled>Clear</button>
+<center>
+  <button type="submit" method="POST" class="btn btn-primary btn-block" name="btn" value="form2" style="width: 300px;margin-top:96px;margin-bottom:30px">Calculate win percentage</button>
+</center>
+</form>
+</div>
+
+</body>
+<script src="static/js/jquery.min.js"></script>
+<script src="static/js/bootstrap.min.js"></script>
+<script>
+
+function changestatebtn()
+{
+  var ele = document.getElementsByName("place");
+for(var i=0;i<ele.length;i++)
+{
+    if (ele[i].checked)
+    {
+      document.getElementById("place-btn").disabled = false;
+    }
+}
+}
+
+function uncheck()
+{
+   var ele = document.getElementsByName("place");
+   for(var i=0;i<ele.length;i++)
+      ele[i].checked = false;
+    document.getElementById("place-btn").disabled = true;
+}
+
+function changestate()
+{
+  var ele = document.getElementsByName("runs");
+for(var i=0;i<ele.length;i++)
+{
+    if (ele[i].checked)
+    {
+      document.getElementById("run-btn").disabled = false;
+    }
+}
+}
+
+function unchecked()
+{
+   var ele = document.getElementsByName("runs");
+   for(var i=0;i<ele.length;i++)
+      ele[i].checked = false;
+    document.getElementById("run-btn").disabled = true;
+}
+
+function modifystate()
+{
+  var ele = document.getElementsByName("players");
+for(var i=0;i<ele.length;i++)
+{
+    if (ele[i].checked)
+    {
+      document.getElementById("form2-btn").disabled = false;
+    }
+}
+}
+
+function disable()
+{
+   var ele = document.getElementsByName("players");
+   for(var i=0;i<ele.length;i++)
+      ele[i].checked = false;
+    document.getElementById("form2-btn").disabled = true;
+}
+
+</script>
+</html>
