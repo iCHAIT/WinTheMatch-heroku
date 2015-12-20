@@ -1,8 +1,8 @@
 from flask import Flask, render_template, request, flash, session
-# from flaskext.mysql import MySQL
+from flaskext.mysql import MySQL
 # from flask_mysql import MySQL
 # import MySQL
-from flask.ext.mysqldb import MySQL
+# from flask.ext.mysqldb import MySQL
 
 app = Flask(__name__)
 mysql = MySQL(app)
@@ -16,7 +16,7 @@ app.config['SECRET_KEY'] = 'development key'
 app.config['MYSQL_DATABASE_HOST'] = 'us-cdbr-iron-east-03.cleardb.net'
 
 mysql.init_app(app)
-# app.config.from_envvar('VENV_SETTINGS', silent=True)
+app.config.from_envvar('VENV_SETTINGS', silent=True)
 
 
 @app.route("/login", methods=['GET', 'POST'])
