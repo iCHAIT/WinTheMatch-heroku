@@ -1,0 +1,274 @@
+from math import ceil
+import MySQLdb as mdb
+
+# connection to database
+
+
+def database():
+    global newlist
+    newlist = []
+    con = mdb.connect('us-cdbr-iron-east-03.cleardb.net', 'b31ec76d1b8f9e', '2cacb672', 'heroku_4195a882ccb08b2')
+    sql = "SELECT * from bowling_statistics"
+    cur = con.cursor()
+
+    cur.execute(sql)
+
+    mt = cur.fetchall()
+
+    for row in mt:
+        newlist.append(row)
+
+
+# Percentage based on economy of bowler
+def win_economy(param1, param2):
+    economy = 0.0
+    win = 0.0
+    nr = 0.0
+    lost = 0.0
+    percentage = 0.0
+    strng = 'India won'
+    strng2 = 'No result'
+
+    for name in newlist:
+        if name[13] == param1:  # player name
+            # char = '-'
+            economy = name[6]
+            # if economy.find(char) > -1:
+            #     economy = economy.replace("-", "")
+
+            if economy != '-':
+                if int(economy) <= float(param2):  # economy
+                    res = name[12]
+                    if res.find(strng) > -1:
+                        win += 1
+                    elif res.find(strng2) > -1:
+                        nr += 1
+                    else:
+                        lost += 1
+
+    if (win+lost) == 0:
+        return "Insufficient Data"
+    else:
+        percentage = (win*100/(win+lost))
+
+    print 'Matches Won : ' + str(int(win))
+    print 'Matches Lost : ' + str(int(lost))
+    print 'No Result : ' + str(int(nr))
+    print 'Win Percentage : %.2f ' % (ceil(percentage))
+
+    return str(int(win)), str(int(lost)), str(int(nr)), ceil(percentage)
+
+
+# Percentage based on runs conceded by the bowler
+def win_runs(param1, param2):
+    runs = 0
+    win = 0.0
+    nr = 0.0
+    lost = 0.0
+    percentage = 0.0
+    strng = 'India won'
+    strng2 = 'No result'
+
+    for name in newlist:
+        if name[13] == param1:
+            runs = name[3]
+            if runs != '-':
+                if int(runs) <= int(param2):  #take as param
+                    res = name[12]
+                    if res.find(strng) > -1:
+                        win += 1
+                    elif res.find(strng2) > -1:
+                        nr += 1
+                    else:
+                        lost += 1
+
+    if (win+lost) == 0:
+        return "Insufficient Data"
+    else:
+        percentage = (win*100/(win+lost))
+
+    percentage = (win*100/(win+lost))
+
+    print 'Matches Won : ' + str(int(win))
+    print 'Matches Lost : ' + str(int(lost))
+    print 'No Result : ' + str(int(nr))
+    print 'Win Percentage : %.2f ' % (percentage)
+
+    return str(int(win)), str(int(lost)), str(int(nr)), percentage
+
+
+# searching in a list
+# def search(list, ground):
+#     for (i, v) in enumerate(list):
+#         if v == ground:
+#             return i
+#     return -1
+
+
+# Spinners combined wickets
+def win_spinners(param):
+    win = 0.0
+    nr = 0.0
+    lost = 0.0
+    percentage = 0.0
+    strng = 'India won'
+    strng2 = 'No result'
+    Type = "Spinner"
+    total = 0
+
+    con = mdb.connect('us-cdbr-iron-east-03.cleardb.net', 'b31ec76d1b8f9e', '2cacb672', 'heroku_4195a882ccb08b2')
+    sql = 'SELECT DISTINCT ODI_NO FROM bowling_statistics'
+    cur = con.cursor()
+
+    cur.execute(sql)
+
+    mt = cur.fetchall()
+
+    for row in mt:
+        for match in row:
+            cur.execute(
+                """SELECT Wickets FROM bowling_statistics where ODI_NO = %s and Type = %s""", (str(match), Type))
+
+            wi = cur.fetchall()
+
+            for row in wi:
+                for wicket in row:
+                    if wicket != "-":
+                        total += int(wicket)
+
+            if total >= int(param):  # take params
+                cur.execute(
+                    """SELECT DISTINCT Result FROM bowling_statistics WHERE ODI_NO = %s""", [match])
+                res = cur.fetchone()
+
+                for a in res:
+                    rest = a
+                if rest.find(strng) > -1:
+                    win += 1
+                elif rest.find(strng2) > -1:
+                    nr += 1
+                else:
+                    lost += 1
+
+    percentage = ((win*100)/(win+lost))
+
+    print 'Win Percentage : %.2f%% ' % (percentage)
+    return percentage
+
+
+# seamers combined wickets
+def win_seamer(param):
+    win = 0.0
+    nr = 0.0
+    lost = 0.0
+    percentage = 0.0
+    strng = 'India won'
+    strng2 = 'No result'
+    Type = "Seamer"
+    total = 0
+
+    con = mdb.connect('us-cdbr-iron-east-03.cleardb.net', 'b31ec76d1b8f9e', '2cacb672', 'heroku_4195a882ccb08b2')
+    sql = 'SELECT DISTINCT ODI_NO FROM bowling_statistics'
+    cur = con.cursor()
+
+    cur.execute(sql)
+
+    mt = cur.fetchall()
+
+    for row in mt:
+        for match in row:
+            cur.execute(
+                """SELECT Wickets FROM bowling_statistics where ODI_NO = %s and Type = %s""", (str(match), Type))
+
+            wi = cur.fetchall()
+
+            for row in wi:
+                for wicket in row:
+                    if wicket != "-":
+                        total += int(wicket)
+
+            if total >= int(param):  # take paramas
+                cur.execute(
+                    """SELECT DISTINCT Result FROM bowling_statistics WHERE ODI_NO = %s""", [match])
+                res = cur.fetchone()
+
+                for a in res:
+                    rest = a
+                if rest.find(strng) > -1:
+                    win += 1
+                elif rest.find(strng2) > -1:
+                    nr += 1
+                else:
+                    lost += 1
+
+    if (win+lost) == 0:
+        return "Insufficient Data"
+    else:
+        percentage = ((win*100)/(win+lost))
+
+    print 'Win Percentage : %.2f%% ' % (percentage)
+    return percentage
+
+
+# Two bowlers taking more than 3 wickets together
+def two_bowlers(param):
+    char = '*'
+    win = 0.0
+    nr = 0.0
+    lost = 0.0
+    percentage = 0.0
+    strng = 'India won'
+    strng2 = 'No result'
+
+    for wickt in newlist:
+        wicket = wickt[4]
+        if wicket != "-":
+            player1 = wickt[13]
+            match = wickt[10]
+            wicketnew = check_combined(player1, match, wicket, param)
+            if wicketnew == 1:
+                res = wickt[12]
+                if res.find(strng) > -1:
+                    win += 1
+                elif res.find(strng2) > -1:
+                    nr += 1
+                else:
+                    lost += 1
+
+    if (win+lost) == 0:
+        return "Insufficient Data"
+    else:
+        percentage = ((win*100)/(win+lost))
+
+    print 'Win Percentage : %.2f%% ' % (percentage)
+    return percentage
+
+
+def check_combined(player, match, wicket, param):
+    char = '*'
+    total = 0
+
+    for name in newlist:
+        if name[13] != player:
+            if name[10] == match:
+                wicketnew = name[4]
+                if wicketnew != "-":
+                    total = int(wicket)+int(wicketnew)
+                    if total > int(param):  # total wicket
+                        return 1
+                        break
+    return 0
+
+
+if __name__ == '__main__':
+    database()
+    # print '\n***ECONOMY CASE***\n'
+    # win_economy()
+    # print '\n***RUNS CONCEDED CASE***\n'
+    # win_runs()
+    print '\n***WICKETS TAKEN BY SPINNERS CASE***\n'
+    win_spinners()
+    print '\n***WICKETS TAKEN BY SEAMERS CASE***\n'
+    win_seamer()
+    print '\n***2 BOWLERS COMBINED CASE***\n'
+    two_bowlers()
