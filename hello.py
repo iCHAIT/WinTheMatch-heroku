@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, flash, session
 # from flaskext.mysql import MySQL
 # from flask_mysql import MySQL
 # import MySQL
-from flask.ext.mysql import MySQL
+from flask.ext.mysqldb import MySQL
 
 app = Flask(__name__)
 mysql = MySQL(app)
